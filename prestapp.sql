@@ -1,6 +1,10 @@
  -- Alumno: Nicola Galante Giovannone / Parrilla 34945
 drop schema if exists prestapp;
+
 create schema prestapp;
+
+use prestapp;
+
 create table clients
 (
 client_id	int not null auto_increment,
@@ -9,7 +13,16 @@ document_number varchar(11) not null,
 address		varchar(50) not null,
 email		varchar(50) not null,
 registration_date date not null,
-primary key (client_id));
+primary key (client_id)
+);
+
+create table employer
+(
+employer_id	int not null auto_increment primary key,
+employer_name	varchar(20) not null,
+employer_type varchar(20) not null,
+payment_date int
+);
 
 create table leads
 (
@@ -23,7 +36,8 @@ employer_id int not null,
 lead_date date not null,
 primary key (lead_id),
 foreign key (client_id) references clients(client_id),
-foreign key (employer_id) references employer(employer_id));
+foreign key (employer_id) references employer(employer_id)
+);
 
 create table status_leads
 (
@@ -34,12 +48,12 @@ is_active		boolean,
 status_date date not null
 );
 
-create table employer
+create table loan_status
 (
-employer_id	int not null auto_increment primary key,
-employer_name	varchar(20) not null,
-employer_type varchar(20) not null,
-payment_date int
+status_id	int not null auto_increment primary key,
+status_name varchar(50) not null,
+status_description varchar(255),
+status_type varchar(50)
 );
 
 create table loan
@@ -59,12 +73,12 @@ foreign key (employer_id) references employer(employer_id),
 foreign key (loan_status) references loan_status(status_id)
 );
 
-create table loan_status
+create table operator
 (
-status_id	int not null auto_increment primary key,
-status_name varchar(50) not null,
-status_description varchar(255),
-status_type varchar(50)
+email varchar(50) not null primary key,
+operator_name varchar(50),
+surname varchar(50),
+password varchar(255)
 );
 
 create table loan_status_history
@@ -77,13 +91,5 @@ history_date date,
 foreign key (loan_id) references loan(loan_id),
 foreign key (operator) references operator(email),
 foreign key (status_id) references loan_status(status_id)
-);
-
-create table operator
-(
-email varchar(50) not null primary key,
-operator_name varchar(50),
-surname varchar(50),
-password varchar(255)
 );
 

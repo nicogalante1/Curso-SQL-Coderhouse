@@ -35,7 +35,7 @@ create table leads
 lead_id	int not null auto_increment,
 client_id int,
 lead_name	varchar(20) not null,
-lead_status varchar(20) not null,
+lead_status int,
 lead_source		varchar(50),
 payroll		float not null,
 employer_id int not null,

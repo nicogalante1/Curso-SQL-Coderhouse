@@ -21,7 +21,28 @@ VIEW `renovadores` AS
     GROUP BY `loan`.`client_id`
 
 --Vista morosos
--- Esta vista muestra los clientes que no han pagado en tiempo y forma y deben ser contactado por los operadores
+-- Esta vista muestra los clientes que no han pagado en tiempo y forma y deben ser contactado por los operadores con los datos otorgados en la tabla.
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `morosos` AS
+    SELECT 
+        `clients`.`client_name` AS `client_name`,
+        `clients`.`document_number` AS `document_number`,
+        `clients`.`email` AS `email`,
+        `loan`.`loan_id` AS `loan_id`,
+        `loan_status`.`status_name` AS `status_name`
+    FROM
+        ((`clients`
+        JOIN `loan` ON ((`clients`.`client_id` = `loan`.`client_id`)))
+        JOIN `loan_status` ON ((`loan_status`.`status_id` = `loan`.`loan_status`)))
+    WHERE
+        ((`loan`.`loan_status` = 8)
+            OR (`loan`.`loan_status` = 9)
+            OR (`loan`.`loan_status` = 10))
+    GROUP BY `loan`.`loan_id`
 
 
 
@@ -59,9 +80,10 @@ VIEW `prestamos_por_cliente` AS
         (`leads`.`lead_status` = 2)
     GROUP BY `leads`.`client_id`
     
-    -- Vista listado_aceptados
-    -- Esta vista lista históricamente los clientes con créditos aprobados
-    CREATE 
+-- Vista listado_aceptados
+-- Esta vista lista históricamente los clientes con créditos aprobados
+
+CREATE 
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER

@@ -33,4 +33,4 @@ RETURN multiplicador;
 END
 
 	-- Ejemplo Uso
-	select client_id, punitorio(due_amount, loan_date) as descuento from loan;
+	select client_id, punitorio(due_amount, loan_date) as punitorios from loan;

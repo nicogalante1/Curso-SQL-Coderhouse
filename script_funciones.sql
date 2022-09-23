@@ -21,5 +21,16 @@ END
     group by loan.client_id;
     
 
--- 2da:
+-- 2da: punitorio
+-- esta funcion devuelve la deuda que se le debe agregar a un cliente por no pagar en tiempo y forma y depende de los días sin pagar la deuda.
  
+CREATE DEFINER=`root`@`localhost` FUNCTION `punitorio`(deuda float, fecha date) RETURNS int
+    DETERMINISTIC
+BEGIN
+declare multiplicador int;
+set multiplicador = (deuda * (1 / (datediff(curdate(), fecha))));
+RETURN multiplicador;
+END
+
+	-- Ejemplo Uso
+	select client_id, punitorio(due_amount, loan_date) as descuento from loan;

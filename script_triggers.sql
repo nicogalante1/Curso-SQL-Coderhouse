@@ -29,7 +29,9 @@
   SELECT * FROM prestapp.loan_status_history;
 
 -- SEGUNDO TRIGGER
-  -- Este trigger hará un respaldo de los clientes eliminados en una nueva tabla
+  -- Este trigger, se activará al eliminar un cliente de la tabla clients.
+  -- Antes, se fijará si existe ese cliente con leads en tabla leads y préstamos en la tabla loans, de ser así, los eliminará y luego el registro será registrado en una nueva tabla llamada deleted_Ccients
+    
     -- Creamos nueva tabla
     create table deleted_clients
   (
@@ -43,20 +45,41 @@
   operator varchar(50),
   primary key (deleted_client_id)); 
   
-  --Trigger
-  CREATE TRIGGER deleted
-  BEFORE DELETE ON clients	
-  FOR each row
-  INSERT INTO deleted_clients (deleted_client_id, client_name, document_number, address, email, deletion_date, deletion_time, operator) VALUES (OLD.client_id, OLD.client_name, OLD.document_number, OLD.address, OLD.email, CURDATE(), CURTIME(), USER())
+  --Triggers
+DROP TRIGGER IF EXISTS deleted_before;
+CREATE TRIGGER deleted_before
+BEFORE DELETE ON clients	
+FOR each row
+DELETE FROM prestapp.leads WHERE leads.client_id = old.client_id ;
 
-  --Probamos eliminando el cliente 50 y chequeamos
-  DELETE FROM `prestapp`.`clients` WHERE (`client_id` = '50');
-  SELECT * FROM prestapp.deleted_clients;
+CREATE TRIGGER deleted_before_loan
+BEFORE DELETE ON clients	
+FOR each row
+DELETE FROM prestapp.loan WHERE loan.client_id = old.client_id;
+
+CREATE TRIGGER deleted
+AFTER DELETE ON clients	
+FOR each row
+INSERT INTO deleted_clients (deleted_client_id, client_name, document_number, address, email, deletion_date, deletion_time, operator) VALUES (OLD.client_id, OLD.client_name, OLD.document_number, OLD.address, OLD.email, CURDATE(), CURTIME(), USER())
+;
+
+--Probamos eliminando el cliente 50 y chequeamos
+DELETE FROM `prestapp`.`clients` WHERE (`client_id` = '50');
+SELECT * FROM prestapp.deleted_clients;
   
-  --NOTA: Este trigger solo elimina clientes que no tengan leads. (Las dos tablas estan relacionadas mediante una foreing key). Esto está hecho a propósito pues no queremos jamás borrar un cliente con un préstamo abierto.
+--El cliente 36 'Valeria Gray' tiene lead y loan, así que debería funcionar también
+--fijarse en estas tablas, está la cliente de client_id 36
+SELECT * FROM prestapp.loan;
+SELECT * FROM prestapp.leads;
+
+--Eliminamos en la tabla clients
+DELETE FROM `prestapp`.`clients` WHERE (`client_id` = '36');
+
+--La cliente ha sido eliminada y ha quedado registrada en 
+SELECT * FROM prestapp.deleted_clients;
+
   
-  
-  
+   
   
   
   

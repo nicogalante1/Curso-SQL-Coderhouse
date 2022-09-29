@@ -3,7 +3,7 @@
 -- PRIMER TRIGGER
   --El trigger que crearemos, será uno que registrará en la tabla loan_status_history (que ya de por sí era una tabla para LOGs) cada vez que alguien haga un cambio de estado en la tabla loan.
 
-  --Para que funcione, vamos a cambiar la tabla operators para que ya no sea un foreing key y en vez de registrar los mails de los operadores, registre el user SQL.
+  --Para que funcione, vamos a cambiar la tabla para que operators ya no sea un foreing key y en vez de registrar los mails de los operadores, registre el user SQL.
 
   ALTER TABLE `prestapp`.`loan_status_history` 
   DROP FOREIGN KEY `loan_status_history_ibfk_2`;

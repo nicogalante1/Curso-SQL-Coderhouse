@@ -24,3 +24,7 @@ INSERT INTO loan_status_history (status_history_id, loan_id, operator, status_id
 --Con este script, cambiamos un estado en la tabla loans y podemos ver como el trigger registra en loan_status_history
 
 UPDATE `prestapp`.`loan` SET `loan_status` = '5' WHERE (`loan_id` = '11');
+
+SELECT * FROM prestapp.loan_status_history;
+
+--
